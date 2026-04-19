@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlacementHub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; color: #000000; min-height: 100vh; }
+
+  nav {
+    padding: 0 40px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ebebeb;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 100;
+  }
+  .brand { font-size: 15px; font-weight: 600; color: #111; text-decoration: none; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #232323;
+    transition: all 0.12s;
+  }
+  .nav-btn:hover { color: #111; border-color: #bbb; }
+  .nav-btn-dark { background: #111; color: #fff; border-color: #111; }
+  .nav-btn-dark:hover { opacity: 0.82; color: #fff; }
+
+  .hero {
+    max-width: 560px;
+    margin: 88px auto 72px;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 4.5vw, 42px);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    color: #111;
+  }
+  .hero p { font-size: 15px; color: #888; line-height: 1.7; margin-bottom: 36px; font-weight: 300; }
+  .hero-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .hero-btn {
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    transition: all 0.12s;
+    background: #fff;
+    color: #888;
+  }
+  .hero-btn-primary { background: #111; color: #fff; border-color: #111; }
+  .hero-btn-primary:hover { opacity: 0.84; }
+  .hero-btn:hover { color: #111; border-color: #bbb; }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+  }
+  .stat-cell {
+    padding: 24px 44px;
+    text-align: center;
+    border-right: 1px solid #ebebeb;
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-n { font-size: 24px; font-weight: 600; color: #111; letter-spacing: -0.02em; }
+  .stat-l { font-size: 11px; color: #aaa; margin-top: 2px; letter-spacing: 0.02em; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 52px 24px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 16px;
+  }
+
+  #jobs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    border: 1px solid #ebebeb;
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 0;
+    background: #ebebeb;
+  }
+  .job-card { background: #fff; padding: 22px; transition: background 0.12s; }
+  .job-card:hover { background: #fafafa; }
+  .job-letter {
+    width: 34px; height: 34px;
+    background: #f4f4f4;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: #333;
+    margin-bottom: 12px;
+  }
+  .job-co { font-size: 14px; font-weight: 600; color: #111; }
+  .job-role { font-size: 12px; color: #999; margin-top: 2px; }
+  .job-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 12px; }
+  .tag {
+    padding: 2px 8px;
+    background: #f4f4f4;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #777;
+  }
+  .job-desc { font-size: 12px; color: #aaa; line-height: 1.6; margin-bottom: 14px; min-height: 36px; }
+  .apply-btn {
+    width: 100%; padding: 8px;
+    background: #111; color: #fff;
+    border: none; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: opacity 0.12s;
+  }
+  .apply-btn:hover { opacity: 0.78; }
+
+  .empty-msg { grid-column: 1/-1; text-align: center; padding: 52px; color: #ccc; font-size: 13px; background: #fff; }
+
+  footer { border-top: 1px solid #ebebeb; padding: 28px; text-align: center; font-size: 12px; color: #ccc; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 16px; }
+    .hero { margin: 52px auto 48px; }
+    .stat-cell { padding: 18px 20px; }
+    .container { padding: 36px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="#">PlacementHub</a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="location.href='register.html'">Register</button>
+    <button class="nav-btn" onclick="location.href='student_login.html'">Student</button>
+    <button class="nav-btn nav-btn-dark" onclick="location.href='admin_login.html'">Admin</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <p class="hero-eyebrow">College Placement Portal</p>
+  <h1>Find your first job after graduation</h1>
+  <p>Browse companies, apply to drives, and track your placement journey — all in one place.</p>
+  <div class="hero-btns">
+    <button class="hero-btn hero-btn-primary" onclick="location.href='register.html'">Get started</button>
+    <button class="hero-btn" onclick="location.href='student_login.html'">Sign in</button>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-cell"><div class="stat-n" id="stat-companies">—</div><div class="stat-l">Companies</div></div>
+  <div class="stat-cell"><div class="stat-n" id="stat-jobs">—</div><div class="stat-l">Open drives</div></div>
+  <div class="stat-cell"><div class="stat-n">Free</div><div class="stat-l">For students</div></div>
+</div>
+
+<div class="container">
+  <div class="section-label">Open placement drives</div>
+  <div id="jobs"><div class="empty-msg">Loading…</div></div>
+</div>
+
+<footer>PlacementHub &copy; 2026</footer>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const jobsDiv = document.getElementById("jobs");
+try {
+  const data = await getDocs(collection(db, "companies"));
+  const companies = data.docs.map(d => ({ id: d.id, ...d.data() }));
+  const open = companies.filter(c => c.open !== false);
+  document.getElementById('stat-companies').textContent = companies.length;
+  document.getElementById('stat-jobs').textContent = open.length;
+  if (!open.length) {
+    jobsDiv.innerHTML = '<div class="empty-msg">No open drives right now. Check back soon.</div>';
+  } else {
+    jobsDiv.innerHTML = open.map(c => `
+      <div class="job-card">
+        <div class="job-letter">${(c.name||'C')[0]}</div>
+        <div class="job-co">${c.name||'Company'}</div>
+        <div class="job-role">${c.role||''}</div>
+        <div class="job-tags">
+          ${c.pkg?`<span class="tag">💰 ${c.pkg}`:''}
+          ${c.min_cgpa?`<span class="tag">CGPA ${c.min_cgpa}+</span>`:''}
+          ${c.drive?`<span class="tag">${c.drive}</span>`:''}
+          ${c.requirement?`<span class="tag">${c.requirement}</span>`:''}
+        </div>
+        <div class="job-desc">${c.description||c.desc||''}</div>
+        <button class="apply-btn" onclick="alert('Please login or register to apply')">Apply →</button>
+      </div>`).join('');
+  }
+} catch(e) {
+  jobsDiv.innerHTML = `<div class="empty-msg">Could not load companies. Please try again later.</div>`;
+}
+</script>
+</body>
+</html>
