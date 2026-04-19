@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — PlacementHub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .back { position: fixed; top: 20px; left: 24px; font-size: 13px; color: #999; text-decoration: none; }
+  .back:hover { color: #111; }
+
+  .card { width: 100%; max-width: 360px; animation: up 0.3s ease both; }
+  @keyframes up { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+
+  .brand { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 36px; }
+  .role-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #999;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  h2 { font-size: 20px; font-weight: 600; color: #111; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .sub { font-size: 13px; color: #aaa; margin-bottom: 28px; font-weight: 300; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: #888; margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #111;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #fff;
+  }
+  .field input:focus { border-color: #111; }
+  .field input::placeholder { color: #ccc; }
+
+  .btn {
+    width: 100%; padding: 11px;
+    background: #111; color: #fff; border: none; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; margin-top: 6px; transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.82; }
+
+  #msg {
+    font-size: 12px; padding: 10px 12px; border-radius: 6px; margin-top: 12px; display: none;
+    background: #fff5f5; border: 1px solid #fecaca; color: #dc2626;
+  }
+  #msg.show { display: block; }
+
+  .foot { margin-top: 24px; font-size: 13px; color: #aaa; display: flex; justify-content: space-between; }
+  .foot a { color: #111; text-decoration: none; font-weight: 500; }
+  .foot a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← Back</a>
+
+<div class="card">
+  <div class="brand">PlacementHub</div>
+  <div class="role-chip">Student portal</div>
+  <h2>Welcome back</h2>
+  <p class="sub">Sign in to view and apply to placement drives</p>
+
+  <div class="field"><label>Email</label><input id="email" type="email" placeholder="yourname@college.edu"></div>
+  <div class="field"><label>Password</label><input id="password" type="password" placeholder="Your password"></div>
+
+  <button class="btn" onclick="login()">Sign in</button>
+  <div id="msg"></div>
+
+  <div class="foot">
+    <a href="index.html">← Home</a>
+    <span>No account? <a href="register.html">Register</a></span>
+  </div>
+</div>
+
+<script type="module">
+import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const msg = document.getElementById("msg");
+
+window.login = function () {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  msg.className = ''; msg.style.display = 'none';
+  if (!email || !password) { msg.className = 'show'; msg.innerText = "Please fill in all fields."; return; }
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => location.href = "student_dashboard.html")
+    .catch(() => { msg.className = 'show'; msg.innerText = "Invalid email or password."; });
+};
+document.addEventListener('keydown', e => { if (e.key === 'Enter') window.login(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — PlacementHub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .back { position: fixed; top: 20px; left: 24px; font-size: 13px; color: #999; text-decoration: none; }
+  .back:hover { color: #111; }
+
+  .card {
+    width: 100%;
+    max-width: 380px;
+    animation: up 0.3s ease both;
+  }
+  @keyframes up { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+
+  .brand { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 36px; }
+
+  h2 { font-size: 20px; font-weight: 600; color: #111; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .sub { font-size: 13px; color: #aaa; margin-bottom: 28px; font-weight: 300; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: #888; margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #111;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #fff;
+  }
+  .field input:focus { border-color: #111; }
+  .field input::placeholder { color: #ccc; }
+
+  .btn {
+    width: 100%;
+    padding: 11px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.82; }
+
+  #msg {
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    display: none;
+  }
+  #msg.error { background: #fff5f5; border: 1px solid #fecaca; color: #dc2626; display: block; }
+  #msg.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; display: block; }
+
+  .foot { margin-top: 24px; font-size: 13px; color: #aaa; text-align: center; }
+  .foot a { color: #111; text-decoration: none; font-weight: 500; }
+  .foot a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← Back</a>
+
+<div class="card">
+  <div class="brand">PlacementHub</div>
+  <h2>Create account</h2>
+  <p class="sub">Register to access placement drives</p>
+
+  <div class="field"><label>Full name</label><input id="name" type="text" placeholder="Rahul Sharma"></div>
+  <div class="field"><label>Email</label><input id="email" type="email" placeholder="rahul@college.edu"></div>
+  <div class="field"><label>Password</label><input id="password" type="password" placeholder="Create a password"></div>
+
+  <button class="btn" onclick="register()">Create account</button>
+  <div id="msg"></div>
+
+  <div class="foot">Already have an account? <a href="student_login.html">Sign in</a></div>
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { setDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const msg = document.getElementById("msg");
+
+window.register = function () {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  msg.className = ''; msg.style.display = 'none';
+  if (!name || !email || !password) {
+    msg.className = 'error'; msg.innerText = "Please fill in all fields."; return;
+  }
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(cred => setDoc(doc(db, "users", cred.user.uid), { name, email, role: "student" }))
+    .then(() => {
+      msg.className = 'success'; msg.innerText = "✓ Registered! Redirecting…";
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      setTimeout(() => location.href = "student_login.html", 1600);
+    })
+    .catch(e => { msg.className = 'error'; msg.innerText = e.message; });
+};
+document.addEventListener('keydown', e => { if (e.key === 'Enter') window.register(); });
+</script>
+</body>
+</html>
